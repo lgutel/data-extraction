@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import mysql.connector
 
 def fichierleplusrecent(chemin):
     # Obtenez la liste des fichiers Excel dans le répertoire spécifié
@@ -26,7 +27,34 @@ def nomfeuille(chemin, fichier_recent): #liste les nom des différentes feuilles
     for sheet_name in sheet_names:
         print(f"- {sheet_name}")
 
+def connexionsql():
+    db = mysql.connector.connect(
+        host=input("Entrez l'@ip de votre serveur: "),
+        user=input("Entrez votre login: "),
+        password=input("Entrez votre password: "),
+        database=input("Entrez votre Base de Données:")
+    )
+    # Créez un curseur pour exécuter des requêtes
+    cursor = db.cursor()
+    table=input("Entrez le nom de votre table")
+
+    # Exécutez la requête SQL
+    query = f"SELECT * FROM {table}"  # Remplacez "ma_table" par le nom de votre table
+    cursor.execute(query)
+
+    # Récupérez les résultats
+    result = cursor.fetchall()
+
+    # Affichez chaque ligne de résultat
+    for row in result:
+        print(row)
+
+    # Fermez le curseur et la connexion
+    cursor.close()
+    db.close()
+
 def main():
+
     chemin = input(r"Entrez le chemin de votre documents (attention sensible à la case) : ")
     fichier_recent=fichierleplusrecent(chemin)
     a = input("Est-ce il y a plusieurs feuilles dans ce document : ")
@@ -43,6 +71,7 @@ def main():
     else:
         feuille = input("Entrez le nom de la feuille à extraire : ")
         print(feuille)
+    connexionsql()
 
 if __name__=='__main__':
     main()
