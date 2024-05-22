@@ -36,22 +36,35 @@ def connexionsql():
     )
     # Créez un curseur pour exécuter des requêtes
     cursor = db.cursor()
-    table=input("Entrez le nom de votre table")
+    table=input("Entrez le nom de votre table: ")
 
-    # Exécutez la requête SQL
-    query = f"SELECT * FROM {table}"  # Remplacez "ma_table" par le nom de votre table
-    cursor.execute(query)
-
-    # Récupérez les résultats
-    result = cursor.fetchall()
-
-    # Affichez chaque ligne de résultat
-    for row in result:
-        print(row)
-
-    # Fermez le curseur et la connexion
-    cursor.close()
-    db.close()
+    b=input("Voulez vous lire ou écrire: ")
+    if b=="lire":
+        # Exécutez la requête SQL
+        query = f"SELECT * FROM {table}"
+        cursor.execute(query)
+        # Récupérez les résultats
+        result = cursor.fetchall()
+        # Affichez chaque ligne de résultat
+        for row in result:
+            print(row)
+        # Fermez le curseur et la connexion
+        cursor.close()
+        db.close()
+    elif b=="écrire":
+        print("Attention ceci est réservé pour les personnes qui si connaisse")
+        print("Pour l'écriture, voulez-vous ajouter un table ou ajouter des données ")
+        c=input("Ecrivez: Cas1 pour ajouter la table ou Cas2 pour ajouter les données ")
+        if c == "Cas1":
+            print("Pas encore coder")
+            # Fermez le curseur et la connexion
+            cursor.close()
+            db.close()
+        elif c == "Cas2":
+            print("Pas encore coder, Merci")
+            # Fermez le curseur et la connexion
+            cursor.close()
+            db.close()
 
 def main():
 
