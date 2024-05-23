@@ -32,59 +32,83 @@ def connexionsql():
         host=input("Entrez l'@ip de votre serveur: "),
         user=input("Entrez votre login: "),
         password=input("Entrez votre password: "),
-        database=input("Entrez votre Base de Données:")
+        database=input("Entrez votre Base de Données: ")
     )
     # Créez un curseur pour exécuter des requêtes
     cursor = db.cursor()
-    table=input("Entrez le nom de votre table: ")
+    a=input("Voulez-vous passer en manuel ou en automatique? (auto/manu)")
+    if a.lower() == "manu":
+        while True:
+            b=input("Voulez vous lire, écrire ou quitter: ")
+            if b=="lire":
+                table = input("Entrez le nom de votre table: ")
+                # Exécutez la requête SQL
+                query = f"SELECT * FROM {table}"
+                cursor.execute(query)
+                # Récupérez les résultats
+                result = cursor.fetchall()
+                # Affichez chaque ligne de résultat
+                for row in result:
+                    print(row)
+            elif b=="écrire":
+                print("Attention ceci est réservé pour les personnes qui si connaisse")
+                print("Pour l'écriture, voulez-vous ajouter un table ou ajouter des données ")
+                c=input("Ecrivez: Cas1 pour ajouter la table ou Cas2 pour ajouter les données ")
+                if c == "Cas1":
+                    while True:
+                        # Ajout de table dans la BDD
+                        nomdetable = input("Entrez le nom de la table à ajouter: ")
+                        colonne = input(
+                            "Entrez les colonnes à ajouter (par exemple: 'nom VARCHAR(100), prenom VARCHAR(100), date_naissance DATE'): ")
 
-    b=input("Voulez vous lire ou écrire: ")
-    if b=="lire":
-        # Exécutez la requête SQL
-        query = f"SELECT * FROM {table}"
-        cursor.execute(query)
-        # Récupérez les résultats
-        result = cursor.fetchall()
-        # Affichez chaque ligne de résultat
-        for row in result:
-            print(row)
-        # Fermez le curseur et la connexion
-        cursor.close()
-        db.close()
-    elif b=="écrire":
-        print("Attention ceci est réservé pour les personnes qui si connaisse")
-        print("Pour l'écriture, voulez-vous ajouter un table ou ajouter des données ")
-        c=input("Ecrivez: Cas1 pour ajouter la table ou Cas2 pour ajouter les données ")
-        if c == "Cas1":
-            print("Pas encore coder")
-            # Fermez le curseur et la connexion
-            cursor.close()
-            db.close()
-        elif c == "Cas2":
-            print("Pas encore coder, Merci")
-            # Fermez le curseur et la connexion
-            cursor.close()
-            db.close()
+                        # Création de la requête SQL
+                        query = f"CREATE TABLE {nomdetable} (id INT PRIMARY KEY AUTO_INCREMENT, {colonne})"
+                        print(query)
 
+                        d = input("Voulez-vous exécuter la commande ? (oui/non) ")
+                        if d.lower() == "oui":
+                            try:
+                                cursor.execute(query)
+                                db.commit()
+                                print(f"Table {nomdetable} ajoutée avec succès.")
+                                break  # Sortir de la boucle si la commande a été exécutée avec succès
+                            except mysql.connector.Error as err:
+                                print(f"Erreur: {err}")
+                        else:
+                            print("Recommençons la saisie des informations.")
+                            r=input("Voulez-vous continuer ? (oui/non)")
+                            if r.lower() == "non":
+                                break
+                elif c == "Cas2":
+                    print("Pas encore coder, Merci")
+            elif b.lower() == "quitter":
+                # Fermeture du curseur et de la connexion
+                cursor.close()
+                db.close()
+                print("Vous avez quitté avec succès")
+                break
 def main():
-
-    chemin = input(r"Entrez le chemin de votre documents (attention sensible à la case) : ")
-    fichier_recent=fichierleplusrecent(chemin)
-    a = input("Est-ce il y a plusieurs feuilles dans ce document : ")
-    #si il y a plusieurs feuilles dans le doc excel le liste et l'utilisateur choisi
-    if a == 'oui':
-        nomfeuille(chemin, fichier_recent)
-        feuille = input("Entrez le nom de la feuille à extraire : ")
-        try:
-            df=pd.read_excel(fichier_recent, sheet_name=feuille)
-            print("Données extraites de la feuille sélectionnée :")
-            print(df)
-        except Exception as e:
-            print(f"Erreur lors de l'extraction des données : {e}")
-    else:
-        feuille = input("Entrez le nom de la feuille à extraire : ")
-        print(feuille)
-    connexionsql()
+    while True:
+        g=input("Que voulez-vous faire ? (extraction/connexion)")
+        if g.lower() == "extraction":
+            chemin = input(r"Entrez le chemin de votre documents (attention sensible à la case) : ")
+            #fichier_recent=fichierleplusrecent(chemin)
+            a = input("Est-ce il y a plusieurs feuilles dans ce document : ")
+            #si il y a plusieurs feuilles dans le doc excel le liste et l'utilisateur choisi
+            if a == 'oui':
+                nomfeuille(chemin, fichier_recent)
+                feuille = input("Entrez le nom de la feuille à extraire : ")
+                try:
+                    df=pd.read_excel(fichier_recent, sheet_name=feuille)
+                    print("Données extraites de la feuille sélectionnée :")
+                    print(df)
+                except Exception as e:
+                    print(f"Erreur lors de l'extraction des données : {e}")
+            else:
+                feuille = input("Entrez le nom de la feuille à extraire : ")
+                print(feuille)
+        elif g.lower() == "connexion":
+            connexionsql()
 
 if __name__=='__main__':
     main()
