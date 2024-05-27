@@ -133,7 +133,13 @@ def main():
                     print(f"Erreur lors de l'extraction des données : {e}")
             else:
                 feuille = input("Entrez le nom de la feuille à extraire : ")
-                print(feuille)
+                try:
+                    df = pd.read_excel(fichier_recent, sheet_name=feuille)
+                    print("Données extraites de la feuille sélectionnée :")
+                    print(df)
+                except Exception as e:
+                    print(f"Erreur lors de l'extraction des données : {e}")
+
         elif g.lower() == "connexion":
             connexionsql()
         else:
