@@ -22,8 +22,9 @@ def conv_csv(fichier_recent, chemin, nom):
     sheets = pd.read_excel(xlsx_file, sheet_name=None)
     # Sauvegarder chaque feuille en format CSV
     for sheet_name, df in sheets.items():
-        df = df.applymap(lambda x: str(x).replace(',', '') if isinstance(x, str) else x)
+        # Chemin du fichier CSV de sortie
         csv_file = f'{output_folder}/{sheet_name}_{nom}.csv'
+        # Sauvegarder le DataFrame en fichier CSV
         df.to_csv(csv_file, index=False)
     return output_folder
 
@@ -57,7 +58,6 @@ def supprimer_fichiers_dossier(dossier):
 
     for fichier in fichiers:
         os.remove(os.path.join(dossier, fichier))
-        print(f"Fichier supprimé : {fichier}")
 
 def main():
     while True:
@@ -71,6 +71,7 @@ def main():
                     fichier_recent = fichierleplusrecent(chemin)
                     nom = input(
                         "Entrez le nom de du document (par exemple le document fait partie d'un suivi electrique vous pouvez mettre elec): ")
+                    supprimer_fichiers_dossier(r"C:\doc_conv")
                     chemin_fichier_csv = conv_csv(fichier_recent, chemin, nom)
                     choix = choisir_fichier_dossier(chemin_fichier_csv)
                 elif a.lower()=="non":
@@ -78,6 +79,7 @@ def main():
                     fichier_recent= input("Entrez le nom de votre fichier: ")
                     nom = input(
                         "Entrez le nom de du document (par exemple le document fait partie d'un suivi electrique vous pouvez mettre elec): ")
+                    supprimer_fichiers_dossier(r"C:\doc_conv")
                     chemin_fichier_csv = conv_csv(fichier_recent, chemin, nom)
                     choix = choisir_fichier_dossier(chemin_fichier_csv)
                 if choix:
@@ -85,7 +87,6 @@ def main():
                     a=input("Voulez-vous continuer (oui/non): ")
                     if a.lower() == "oui":
                         print("Le fichier vas être exporté vers une BDD MySQL")
-                        print(choix)
                         connexionsql(choix, chemin_fichier_csv)
                         supprimer_fichiers_dossier("C:/doc_conv")
             elif a.lower()=="csv":
