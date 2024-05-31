@@ -1,4 +1,5 @@
 import mysql.connector
+from mysql.connector import errorcode
 import csv
 import os
 import pandas as pd
@@ -106,6 +107,7 @@ def connexionsql(choix, chemin_fichier_csv):
                     try:
                         cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
                         cursor.execute(
+
                             f"SELECT CONCAT('DROP TABLE IF EXISTS `', table_name, '`;') FROM information_schema.tables WHERE table_schema = '{database}';")
                         drop_table_queries = cursor.fetchall()
                         for drop_query in drop_table_queries:
@@ -113,33 +115,31 @@ def connexionsql(choix, chemin_fichier_csv):
                         cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
                         db.commit()
                         print("Toutes les tables ont été supprimées avec succès.")
+                        chemin_fichier_csv=rf"{chemin_fichier_csv}\{choix}"
+                        ## Compter le nombre de colonnes pour créer la table
+                        with open(chemin_fichier_csv, newline='') as csvfile:
+                            reader = csv.reader(csvfile)
+                            num_columns = len(next(reader))
+                        ## Créer la requête pour créer la table
+                        table_name = os.path.splitext(os.path.basename(chemin_fichier_csv))[0]
+                        create_table_query = f"CREATE TABLE IF NOT EXISTS `{table_name}` ("
+                        for i in range(num_columns):
+                            create_table_query += f"colonne_{i} VARCHAR(255), "
+                        create_table_query = create_table_query.rstrip(', ') + ")"
+                        cursor.execute(create_table_query)
+                        db.commit()
+                        print(f"La table `{table_name}` a été créée avec succès.")
+                        ## Insérer les données du CSV dans la table
+                        with open(chemin_fichier_csv, newline='') as csvfile:
+                            csv_data = csv.reader(csvfile)
+                            next(csv_data)  # Skip header
+                            for row in csv_data:
+                                cursor.execute(f"INSERT INTO `{table_name}` VALUES ({', '.join(['%s'] * num_columns)})",
+                                               row)
+                            db.commit()
+                            print(f"Données importées avec succès dans la table `{table_name}`.")
                     except mysql.connector.Error as err:
                         print(f"Erreur: {err}")
-
-                    chemin_vers_csv = rf"{chemin_fichier_csv}\{choix}"
-                    df = pd.read_csv(chemin_vers_csv, delimiter=";")
-                    nom_fichier = os.path.splitext(os.path.basename(chemin_vers_csv))[0]
-
-                    # Nettoyage des noms de colonnes
-                    cleaned_columns = [
-                        f'`{colonne.strip().replace(" ", "_").replace(":", "").replace("-", "_").replace(".", "_")}` VARCHAR(1200)'
-                        for colonne in df.columns]
-
-                    create_table_query = f"""
-                    CREATE TABLE IF NOT EXISTS `{nom_fichier.replace(" ", "_").replace(":", "").replace("-", "_").replace(".", "_")}` (
-                        {', '.join(cleaned_columns)}
-                    );
-                    """
-                    print(create_table_query)  # Debug: Print the query to verify
-                    cursor.execute(create_table_query)
-                    for index, row in df.iterrows():
-                        insert_query = f"""
-                        INSERT INTO `{nom_fichier.replace(" ", "_").replace(":", "").replace("-", "_").replace(".", "_")}` ({', '.join([f'`{col}`' for col in df.columns])})
-                        VALUES ({', '.join(['%s'] * len(df.columns))});
-                        """
-                        cursor.execute(insert_query, tuple(row))
-                    db.commit()
-                    print("Importation terminée !")
                 elif b.lower() == "quitter":
                     break
 
