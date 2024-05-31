@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from SQL import connexionsql
+from SQL import connexionMySQL_MariaDB, connexionInfluxDB
 
 def fichierleplusrecent(chemin):
     fichiers_excel = [fichier for fichier in os.listdir(chemin) if fichier.lower().endswith(".xlsx")]
@@ -13,20 +13,20 @@ def fichierleplusrecent(chemin):
 
 def conv_csv(fichier_recent, chemin, nom):
     # Chemin du fichier XLSX à convertir
-    xlsx_file = rf'{chemin}\{fichier_recent}'
+    fichier_xlsx = rf'{chemin}\{fichier_recent}'
     # Création du fichier si il n'existe pas
     os.makedirs('C:/doc_conv/', exist_ok=True)
     # Chemin du dossier où enregistrer les fichiers CSV (assurez-vous que ce dossier existe)
-    output_folder = 'C:/doc_conv'
+    fichier_sortie = 'C:/doc_conv'
     # Lire toutes les feuilles du fichier XLSX
-    sheets = pd.read_excel(xlsx_file, sheet_name=None)
+    sheets = pd.read_excel(fichier_xlsx, sheet_name=None)
     # Sauvegarder chaque feuille en format CSV
     for sheet_name, df in sheets.items():
         # Chemin du fichier CSV de sortie
-        csv_file = f'{output_folder}/{sheet_name}_{nom}.csv'
+        csv_file = f'{fichier_sortie}/{sheet_name}_{nom}.csv'
         # Sauvegarder le DataFrame en fichier CSV
         df.to_csv(csv_file, index=False)
-    return output_folder
+    return fichier_sortie
 
 def choisir_fichier_dossier(dossier):
     fichiers = [f for f in os.listdir(dossier) if os.path.isfile(os.path.join(dossier, f))]
@@ -86,8 +86,18 @@ def main():
                     print(f"Fichier choisi : {choix}")
                     a=input("Voulez-vous continuer (oui/non): ")
                     if a.lower() == "oui":
-                        print("Le fichier vas être exporté vers une BDD MySQL")
-                        connexionsql(choix, chemin_fichier_csv)
+                        print("Nous proposons plusieurs type de connection SQL. On inclut MariaDB, MySQL et InfluxDB")
+                        print("InfluxDB est en fasse de test")
+                        a = input("Que voulez-vous selectionner (MariaDB/MySQL/InfluxDB: ")
+                        if a.lower() == "mariadb":
+                            print("Le fichier vas être exporté vers une BDD MariaDB")
+                            connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+                        elif a.lower() == "mysql":
+                            print("Le fichier vas être exporté vers une BDD MySQL")
+                            connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+                        elif a.lower() == "influxdb":
+                            print("Le fichier vas être exporté vers une BDD InfluxDB")
+                            connexionInfluxDB(choix, chemin_fichier_csv)
                         supprimer_fichiers_dossier("C:/doc_conv")
             elif a.lower()=="csv":
                 while True:
@@ -98,7 +108,20 @@ def main():
                         print(rf"Voici le chemin et le nom de votre fichier: {chemin}\{fichier_recent}")
                         a = input("Voulez-vous import dans votre BDD (oui/non):")
                         if a.lower() == "oui":
-                            connexionsql(fichier_recent, chemin)
+                            print(
+                                "Nous proposons plusieurs type de connection SQL. On inclut MariaDB, MySQL et InfluxDB")
+                            print("InfluxDB est en fasse de test")
+                            a = input("Que voulez-vous selectionner (MariaDB/MySQL/InfluxDB: ")
+                            if a.lower() == "mariadb":
+                                print("Le fichier vas être exporté vers une BDD MariaDB")
+                                connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+                            elif a.lower() == "mysql":
+                                print("Le fichier vas être exporté vers une BDD MySQL")
+                                connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+                            elif a.lower() == "influxdb":
+                                print("Le fichier vas être exporté vers une BDD InfluxDB")
+                                connexionInfluxDB(choix, chemin_fichier_csv)
+                            supprimer_fichiers_dossier("C:/doc_conv")
                         elif a.lower() == "non":
                             print("On recommence....")
                     elif a.lower() == "non":
@@ -107,14 +130,39 @@ def main():
                         print(rf"Voici le chemin et le nom de votre fichier: {chemin}\{fichier}")
                         a = input("Voulez-vous import dans votre BDD (oui/non):")
                         if a.lower() == "oui":
-                            connexionsql(fichier, chemin)
+                            print(
+                                "Nous proposons plusieurs type de connection SQL. On inclut MariaDB, MySQL et InfluxDB")
+                            print("InfluxDB est en fasse de test")
+                            a = input("Que voulez-vous selectionner (MariaDB/MySQL/InfluxDB: ")
+                            if a.lower() == "mariadb":
+                                print("Le fichier vas être exporté vers une BDD MariaDB")
+                                connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+                            elif a.lower() == "mysql":
+                                print("Le fichier vas être exporté vers une BDD MySQL")
+                                connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+                            elif a.lower() == "influxdb":
+                                print("Le fichier vas être exporté vers une BDD InfluxDB")
+                                connexionInfluxDB(choix, chemin_fichier_csv)
                         elif a.lower() == "non":
                             print("On recommence....")
                     elif a.lower() == "quitter":
                         break
         elif g.lower() == "connexion":
             choix=None
-            connexionsql(choix)
+            chemin_fichier_csv=None
+            print("Nous proposons plusieurs type de connection SQL. On inclut MariaDB, MySQL et InfluxDB")
+            print("InfluxDB est en fasse de test")
+            a = input("Que voulez-vous selectionner (MariaDB/MySQL/InfluxDB: ")
+            if a.lower() == "mariadb":
+                print("Le fichier vas être exporté vers une BDD MariaDB")
+                connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+            elif a.lower() == "mysql":
+                print("Le fichier vas être exporté vers une BDD MySQL")
+                connexionMySQL_MariaDB(choix, chemin_fichier_csv)
+            elif a.lower() == "influxdb":
+                print("Le fichier vas être exporté vers une BDD InfluxDB")
+                connexionInfluxDB(choix, chemin_fichier_csv)
+            supprimer_fichiers_dossier("C:/doc_conv")
         else:
             break
 
