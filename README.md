@@ -3,7 +3,7 @@ FR/Ce programme est un programme python qui permet d'exctraire les données d'un
 Pour ce faire, il faut les librairies pandas, mysql-connector-python, os, openpyxlsx et influxdb
 
 # Initialisation
-Il vous faut un IDE (par exemple PyCharm) pour lancer le programme (assurer-vous d'avoir tous installé).
+Il vous faut un IDE (par exemple PyCharm) pour lancer le programme (assurer-vous d'avoir tous installés).
 Lors du démmarage du programme, le programme va vous demandez plusieurs chose:
 
 Extraction: Il permet de convertir des fichiers xlsx en csv ou de prendre les fichier csv et de les exporter vers un base de donnée
