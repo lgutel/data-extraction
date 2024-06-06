@@ -4,18 +4,18 @@ Pour ce faire, il faut les librairies pandas, mysql-connector-python, os, openpy
 
 # Initialisation
 Il vous faut un IDE (par exemple PyCharm) pour lancer le programme (assurer-vous d'avoir tous installés).
-Lors du démmarage du programme, le programme va vous demandez plusieurs chose:
+Lors du démarage du programme, le programme va vous demandez plusieurs chose:
 
-Extraction: Il permet de convertir des fichiers xlsx en csv ou de prendre les fichier csv et de les exporter vers un base de donnée
+Extraction: Il permet de convertir des fichiers xlsx en csv ou de prendre les fichier csv et de les exporter vers une base de donnée
 
 Connexion: Il permet de se connecter sur une base de donnée supporter par le programme (MySQL, MariaDB et InfluxDB)
 # Extraction
 Lorsque vous choisisez l'option extraction il vous proposera plusieurs option:
-Si on veux prendre un fichier plus recent, le programme vous demmandera le chemin du fichier.
+Si on veux prendre un fichier plus recent, le programme vous demmandera le chemin du fichier sinon vous pouvez prendre un document spécifique, par contre il faudra renseigner le chemin et le nom du fichier.
 
 ![image](https://github.com/lgutel/data-extraction/assets/150175199/a7e1e842-1ce0-4a7c-8515-c5386be5ffaa)
 
-Puis le convertira en cvs dans le dossier C:\doc_csv\, et vous avez justes à choisir et à confirmé votre choix
+Puis le programme convertira le fichier le plus recent ou pas en cvs dans le dossier C:\doc_csv\, et vous avez justes à choisir et à confirmé votre choix
 ![image](https://github.com/lgutel/data-extraction/assets/150175199/cb8ee835-3d9d-4400-92a3-f7229c7a54a3)
 
 Il vous demandera de selectionner un type de BDD et vous demmendera votre couple de login/mot de passe avec le nom de la base de donnée
